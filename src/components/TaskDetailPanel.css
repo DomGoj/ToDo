@@ -1,0 +1,152 @@
+.detail-panel {
+  padding: 28px 24px;
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.detail-panel__close-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.detail-panel__close-btn {
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  transition: color 0.15s;
+}
+
+.detail-panel__close-btn:hover {
+  color: var(--text-primary);
+}
+
+.detail-panel__section {
+  margin-bottom: 20px;
+}
+
+.detail-panel__section--last {
+  margin-bottom: 0;
+}
+
+.detail-panel__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
+}
+
+.detail-panel__task-title {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.detail-panel__description {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.detail-panel__attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- Attachment row --- */
+
+.attachment-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.attachment-row__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.attachment-row__name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-word;
+}
+
+.attachment-row__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  margin-left: 46px;
+}
+
+.attachment-row__btn-download {
+  background: var(--accent-blue);
+  color: white;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.attachment-row__btn-download:hover {
+  background: #2563eb;
+}
+
+.attachment-row__btn-remove {
+  background: #ef4444;
+  color: white;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.attachment-row__btn-remove:hover {
+  background: #dc2626;
+}
+
+/* --- File type icons --- */
+
+.file-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-icon--png {
+  background: #1e2640;
+  border: 1px solid var(--border);
+}
+
+.file-icon--pdf {
+  background: #2d1515;
+  border: 1px solid #3d1e1e;
+}
+
+.file-icon--docx {
+  background: #1a2535;
+  border: 1px solid #253560;
+}
+
+@media (max-width: 480px) {
+  .detail-panel {
+    padding: 20px 14px;
+  }
+}
