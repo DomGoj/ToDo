@@ -7,6 +7,7 @@ interface Props {
   selectedId: string
   onSelect: (id: string) => void
   onToggle: (id: string) => void
+  onAddTask: () => void
 }
 
 interface TaskItemProps {
@@ -76,14 +77,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggl
   )
 }
 
-const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle }) => {
+const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAddTask }) => {
   return (
     <div className="task-list">
 
       <div className="task-list__header">
         <h1 className="task-list__title">Dzisiejsze zadania</h1>
 
-        <button className="task-list__add-btn" title="Dodaj zadanie">
+        <button className="task-list__add-btn" title="Dodaj zadanie" onClick={onAddTask}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M8 3v10M3 8h10" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
