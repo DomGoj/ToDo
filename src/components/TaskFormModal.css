@@ -23,12 +23,33 @@
 }
 
 .modal-header {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between; /* Rozsuwa tytuł i przycisk na boki */
+  align-items: center; /* Wyrównuje je w pionie */
+  margin-bottom: 25px;
 }
 
 .modal-title {
   color: #e8ecf4;
   font-size: 20px;
+  margin: 0;
+}
+
+.modal-close-btn {
+  color: #ef4444;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .form-group {
@@ -41,29 +62,75 @@
   color: #8b95b0;
   font-size: 11px;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .form-input, .form-textarea, .form-select {
   background: #131824;
   border: 1px solid #252d42;
   color: white;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
   outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: #3b82f6;
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: #5a6480;
+  font-family: inherit;
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-file-input {
+  color: #8b95b0;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.form-file-input::file-selector-button {
+  background: #252d42;
+  color: #e8ecf4;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.form-file-input::file-selector-button:hover {
+  background: #3b82f6;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 25px;
+  margin-top: 30px;
 }
 
 .btn-cancel {
   color: #8b95b0;
-  cursor: pointer;
   padding: 10px 20px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.btn-cancel:hover {
+  color: #e8ecf4;
 }
 
 .btn-submit {
@@ -72,9 +139,19 @@
   padding: 10px 24px;
   border-radius: 8px;
   font-weight: 600;
-  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.btn-submit:hover {
+.btn-submit:hover:not(:disabled) {
   background: #2563eb;
+}
+
+.btn-submit:disabled {
+  background: #252d42;
+  color: #5a6480;
+  cursor: not-allowed;
+}
+
+.detail-panel__description {
+  white-space: pre-wrap;
 }

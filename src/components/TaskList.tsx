@@ -18,6 +18,9 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggle }) => {
+
+  const isOverdue = task.dueDate && task.dueDate < formatDateStr(new Date()) && !task.completed;
+  
   return (
     <div
       onClick={onSelect}
@@ -70,14 +73,42 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggl
       </div>
 
       {/* Due time */}
-      <div className="task-item__due">
-        Termin: {task.dueTime}
+      <div className={`task-item__due ${isOverdue ? 'task-item__due--overdue' : ''}`} style={isOverdue ? { color: '#d32f2f', fontWeight: '500' } : {}}>
+        Termin: {task.dueDate ? `${task.dueDate} ` : ''}{task.dueTime || ''}
       </div>
     </div>
   )
 }
 
+const formatDateStr = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAddTask }) => {
+
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const todayStr = formatDateStr(today);
+  const tomorrowStr = formatDateStr(tomorrow);
+
+  // Filtrowanie zadań
+  const overdueTasks = tasks.filter(t => t.dueDate && t.dueDate < todayStr && !t.completed);
+  const todayTasks = tasks.filter(t => t.dueDate === todayStr);
+  const tomorrowTasks = tasks.filter(t => t.dueDate === tomorrowStr);
+  
+  // Pozostałe zadania (bez daty, daty późniejsze niż jutro, oraz zrealizowane zadania)
+  const laterTasks = tasks.filter(t => {
+    if (t.dueDate === todayStr) return false;
+    if (t.dueDate === tomorrowStr) return false;
+    if (t.dueDate && t.dueDate < todayStr && !t.completed) return false;
+    return true;
+  });
+
   return (
     <div className="task-list">
 
@@ -91,18 +122,89 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
         </button>
       </div>
 
-      <div className="task-list__items">
-        {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            isSelected={task.id === selectedId}
-            onSelect={() => onSelect(task.id)}
-            onToggle={() => onToggle(task.id)}
-          />
-        ))}
-      </div>
+       <div className="task-list__content" style={{ padding: '0 20px', overflowY: 'auto' }}>
+        
+        {/* Zadania zaległe */}
+        {overdueTasks.length > 0 && (
+          <>
+            <h2 style={{ fontSize: '14px', color: '#d32f2f', marginTop: '16px', marginBottom: '8px', fontWeight: 'bold' }}>
+              Zaległe zadania ({overdueTasks.length})
+            </h2>
+            <div className="task-list__items">
+              {overdueTasks.map((task) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  isSelected={task.id === selectedId}
+                  onSelect={() => onSelect(task.id)}
+                  onToggle={() => onToggle(task.id)}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
+        {/* Dzisiejsze zadania */}
+        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: overdueTasks.length > 0 ? '24px' : '16px', marginBottom: '8px' }}>
+          Dzisiejsze zadania ({todayTasks.length})
+        </h2>
+        <div className="task-list__items">
+          {todayTasks.length > 0 ? (
+            todayTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                isSelected={task.id === selectedId}
+                onSelect={() => onSelect(task.id)}
+                onToggle={() => onToggle(task.id)}
+              />
+            ))
+          ) : (
+            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak zadań na dziś.</p>
+          )}
+        </div>
+
+        {/* Jutrzejsze zadania */}
+        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: '24px', marginBottom: '8px' }}>
+          Jutrzejsze zadania ({tomorrowTasks.length})
+        </h2>
+        <div className="task-list__items">
+          {tomorrowTasks.length > 0 ? (
+            tomorrowTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                isSelected={task.id === selectedId}
+                onSelect={() => onSelect(task.id)}
+                onToggle={() => onToggle(task.id)}
+              />
+            ))
+          ) : (
+            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak zadań na jutro.</p>
+          )}
+        </div>
+
+        {/* Późniejsze zadania */}
+        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: '24px', marginBottom: '8px' }}>
+          Późniejsze zadania ({laterTasks.length})
+        </h2>
+        <div className="task-list__items">
+          {laterTasks.length > 0 ? (
+            laterTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                isSelected={task.id === selectedId}
+                onSelect={() => onSelect(task.id)}
+                onToggle={() => onToggle(task.id)}
+              />
+            ))
+          ) : (
+            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak późniejszych zadań.</p>
+          )}
+        </div>
+
+      </div>
     </div>
   )
 }

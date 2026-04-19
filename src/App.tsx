@@ -4,20 +4,19 @@ import Topbar from './components/Topbar'
 import TaskList from './components/TaskList'
 import TaskDetailPanel from './components/TaskDetailPanel'
 import TaskFormModal from './components/TaskFormModal'
+import CompletedTaskList from './components/CompletedTaskList'
 import { Task, TaskDetail, NavItem } from './types'
 import './App.css'
 
 // Importy Firebase
 import { db, storage } from './firebase'
-import { collection, onSnapshot, query, doc, updateDoc, addDoc } from 'firebase/firestore'
+import { collection, onSnapshot, query, doc, updateDoc, addDoc, Timestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [selectedId, setSelectedId] = useState<string>('')
   const [activeNav, setActiveNav] = useState<NavItem>('Moje zadania')
-  
-  // Stan sterujący widocznością modala formularza
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 1. Pobieranie danych z Firestore
@@ -58,17 +57,26 @@ const App: React.FC = () => {
           });
         }
       }
+      
+      let dueDateTimestamp = null;
+      if (formData.dueDate) {
+        const timeString = formData.dueTime ? formData.dueTime : '00:00';
+        const dateObject = new Date(`${formData.dueDate}T${timeString}`);
+        dueDateTimestamp = Timestamp.fromDate(dateObject);
+      }
 
       // Zapis dokumentu zadania w Firestore
       await addDoc(collection(db, "tasks"), {
         title: formData.title,
         description: formData.description,
-        dueTime: formData.dueTime,
+        dueDate: formData.dueDate || null,
+        dueTime: formData.dueTime || null,
+        dueDateTimestamp: dueDateTimestamp,
         priority: formData.priority !== 'Normalny' ? formData.priority : null,
         completed: false,
         attachments: uploadedAttachments,
         hasAttachment: uploadedAttachments.length > 0,
-        createdAt: new Date()
+        createdAt: Timestamp.now()
       });
       
     } catch (error) {
@@ -98,6 +106,9 @@ const App: React.FC = () => {
   const selectedTask = tasks.find(t => t.id === selectedId);
   const isDetailOpen = selectedId !== '' && selectedTask !== undefined;
 
+  const pendingTasks = tasks.filter(task => !task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
+
   return (
     <div className="app">
       <Sidebar activeItem={activeNav} onNavigate={setActiveNav} />
@@ -116,13 +127,31 @@ const App: React.FC = () => {
               borderRight: isDetailOpen ? '1px solid var(--border)' : 'none',
             }}
           >
-            <TaskList
-              tasks={tasks}
-              selectedId={selectedId}
-              onSelect={handleSelect}
-              onToggle={handleToggle}
-              onAddTask={() => setIsModalOpen(true)}
-            />
+            {activeNav === 'Moje zadania' && (
+              <TaskList
+                tasks={pendingTasks}
+                selectedId={selectedId}
+                onSelect={handleSelect}
+                onToggle={handleToggle}
+                onAddTask={() => setIsModalOpen(true)}
+              />
+            )}
+
+            {activeNav === 'Zrealizowane zadania' && (
+              <CompletedTaskList
+                tasks={completedTasks}
+                selectedId={selectedId}
+                onSelect={handleSelect}
+                onToggle={handleToggle}
+              />
+            )}
+
+            {['Pulpit', 'Pliki', 'Ustawienia'].includes(activeNav) && (
+              <div style={{ padding: '40px', color: '#666' }}>
+                <h2>{activeNav}</h2>
+                <p>Ten widok jest w trakcie budowy...</p>
+              </div>
+            )}
           </div>
 
           {/* Kolumna panelu szczegółów */}

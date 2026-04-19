@@ -4,6 +4,7 @@ import './TaskFormModal.css';
 interface TaskFormData {
   title: string;
   description: string;
+  dueDate: string;
   dueTime: string;
   priority: string;
 }
@@ -18,6 +19,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     description: '',
+    dueDate: '',
     dueTime: '',
     priority: 'Normalny',
   });
@@ -37,7 +39,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
     setIsSubmitting(true);
     try {
       await onSubmit(formData, files);
-      setFormData({ title: '', description: '', dueTime: '', priority: 'Normalny' });
+      setFormData({ title: '', description: '', dueDate: '', dueTime: '', priority: 'Normalny' });
       setFiles(null);
       onClose();
     } catch (error) {
@@ -64,7 +66,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
               type="text" 
               name="title" 
               className="form-input" 
-              placeholder="Np. Przegląd kodu..." 
+              placeholder="Tytuł..." 
               value={formData.title} 
               onChange={handleChange} 
             />
@@ -81,18 +83,28 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
 
-          <div className="form-row" style={{ marginTop: '12px' }}>
-            <div className="form-group">
-              <label className="form-label">Termin (Godzina/Data)</label>
+          <div className="form-group" style={{ flex: 1 }}>
+              <label className="form-label">Data wykonania</label>
               <input 
-                type="text" 
+                type="date" 
+                name="dueDate" 
+                className="form-input" 
+                value={formData.dueDate} 
+                onChange={handleChange} 
+              />
+            </div>
+
+          <div className="form-group" style={{ flex: 1 }}>
+              <label className="form-label">Godzina (opcjonalnie)</label>
+              <input 
+                type="time" 
                 name="dueTime" 
                 className="form-input" 
-                placeholder="Np. 15:00 lub Jutro" 
                 value={formData.dueTime} 
                 onChange={handleChange} 
               />
             </div>
+
             <div className="form-group">
               <label className="form-label">Priorytet</label>
               <select 
@@ -106,7 +118,6 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
                 <option value="Wysoki">Wysoki</option>
               </select>
             </div>
-          </div>
 
           <div className="form-group" style={{ marginTop: '12px' }}>
             <label className="form-label">Załączniki (opcjonalne)</label>

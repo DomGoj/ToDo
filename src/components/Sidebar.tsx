@@ -18,13 +18,13 @@ const navIcons: Record<NavItem, React.ReactNode> = {
   ),
   'Moje zadania': (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M4.5 8l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   ),
-  Projekty: (
+  'Zrealizowane zadania': (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M4.5 8l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   Pliki: (
@@ -41,7 +41,7 @@ const navIcons: Record<NavItem, React.ReactNode> = {
   ),
 }
 
-const navItems: NavItem[] = ['Pulpit', 'Moje zadania', 'Projekty', 'Pliki', 'Ustawienia']
+const navItems: NavItem[] = ['Pulpit', 'Moje zadania', 'Zrealizowane zadania', 'Pliki', 'Ustawienia']
 
 const Sidebar: React.FC<Props> = ({ activeItem, onNavigate }) => {
   return (

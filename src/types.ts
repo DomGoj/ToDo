@@ -1,11 +1,14 @@
 export interface Task {
   id: string
   title: string
-  dueTime: string
+  description?: string;
+  dueDate?: string; 
+  dueTime?: string;
   completed: boolean
   priority?: string
   badge?: string
   hasAttachment?: boolean
+  attachments?: any[];
 }
 
 export interface Attachment {
@@ -21,4 +24,4 @@ export interface TaskDetail {
   attachments: Attachment[]
 }
 
-export type NavItem = 'Pulpit' | 'Moje zadania' | 'Projekty' | 'Pliki' | 'Ustawienia'
+export type NavItem = 'Pulpit' | 'Moje zadania' | 'Zrealizowane zadania' | 'Pliki' | 'Ustawienia'
