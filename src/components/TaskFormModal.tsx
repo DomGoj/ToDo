@@ -101,9 +101,9 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
                 value={formData.priority} 
                 onChange={handleChange}
               >
-                <option value="Normalny">Normalny</option>
-                <option value="Pri">Priorytet</option>
                 <option value="Niski">Niski</option>
+                <option value="Normalny">Normalny</option>
+                <option value="Wysoki">Wysoki</option>
               </select>
             </div>
           </div>
