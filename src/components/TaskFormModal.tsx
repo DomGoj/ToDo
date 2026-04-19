@@ -72,7 +72,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
 
-          <div className="form-group" style={{ marginTop: '12px' }}>
+          <div className="form-group">
             <label className="form-label">Opis</label>
             <textarea 
               name="description" 
@@ -83,7 +83,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
             />
           </div>
 
-          <div className="form-group" style={{ flex: 1 }}>
+          <div className="form-group">
               <label className="form-label">Data wykonania</label>
               <input 
                 type="date" 
@@ -94,7 +94,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
               />
             </div>
 
-          <div className="form-group" style={{ flex: 1 }}>
+          <div className="form-group">
               <label className="form-label">Godzina (opcjonalnie)</label>
               <input 
                 type="time" 
@@ -119,7 +119,7 @@ const TaskFormModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
               </select>
             </div>
 
-          <div className="form-group" style={{ marginTop: '12px' }}>
+          <div className="form-group">
             <label className="form-label">Załączniki (opcjonalne)</label>
             <input 
               type="file" 

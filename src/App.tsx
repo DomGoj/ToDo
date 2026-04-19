@@ -10,7 +10,7 @@ import './App.css'
 
 // Importy Firebase
 import { db, storage, auth } from './firebase'
-import { collection, onSnapshot, query, doc, updateDoc, addDoc, Timestamp } from 'firebase/firestore'
+import { collection, onSnapshot, query, doc, updateDoc, addDoc, Timestamp, arrayUnion } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth'
 
@@ -126,8 +126,44 @@ useEffect(() => {
     }
   }
 
+  // 4. Dodawanie plików do istniejącego zadania
+  const handleAddMoreFiles = async (taskId: string, files: FileList | null) => {
+    if (!files || files.length === 0 || !user) return;
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileRef = ref(storage, `attachments/${Date.now()}_${file.name}`);
+        
+        await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(fileRef);
+
+        const taskRef = doc(db, "tasks", taskId);
+
+        await updateDoc(taskRef, {
+          attachments: arrayUnion({
+            id: Date.now().toString() + i,
+            name: file.name,
+            type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
+            url: url,
+            uploadedBy: user?.email, 
+            uploadedAt: Timestamp.now()
+          }),
+          hasAttachment: true
+        });
+      }
+    } catch (error) {
+      console.error("Błąd podczas dodawania załącznika:", error);
+      alert("Nie udało się dodać pliku.");
+    }
+  };
+
   const handleSelect = (id: string) => setSelectedId(id);
   const handleClose = () => setSelectedId('');
+  const handleNavigate = (navItem: NavItem) => {
+    setActiveNav(navItem);
+    setSelectedId('');
+  };
 
   const selectedTask = tasks.find(t => t.id === selectedId);
   const isDetailOpen = selectedId !== '' && selectedTask !== undefined;
@@ -137,13 +173,10 @@ useEffect(() => {
 
   if (!user) {
     return (
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f1117', color: 'white' }}>
-        <h1 style={{ marginBottom: '20px' }}>TaskFlow</h1>
-        <p style={{ marginBottom: '30px', color: '#8b95b0' }}>Musisz się zalogować, aby uzyskać dostęp do zadań.</p>
-        <button 
-          onClick={handleLogin}
-          style={{ background: '#3b82f6', color: 'white', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' }}
-        >
+      <div className="login-panel">
+        <h1>TaskFlow</h1>
+        <p>Musisz się zalogować, aby uzyskać dostęp do zadań.</p>
+        <button onClick={handleLogin}>
           Zaloguj się przez Google
         </button>
       </div>
@@ -152,28 +185,15 @@ useEffect(() => {
 
   return (
     <div className="app">
-      <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 1000 }}>
-        <button onClick={handleLogout} style={{ background: '#252d42', color: 'white', padding: '8px 16px', borderRadius: '6px' }}>
-          Wyloguj ({user.displayName})
-        </button>
-      </div>
 
-      <Sidebar activeItem={activeNav} onNavigate={setActiveNav} />
+      <Sidebar activeItem={activeNav} onNavigate={handleNavigate} />
 
       <div className="app__main">
-        <Topbar />
+        <Topbar user={user} onLogout={handleLogout} />
 
         <div className="app__content">
           {/* Kolumna listy zadań */}
-          <div
-            className={`task-list-col ${isDetailOpen ? 'collapsed' : ''}`}
-            style={{
-              flex: isDetailOpen ? '0 0 360px' : '0 0 100%',
-              minWidth: isDetailOpen ? 280 : '100%',
-              maxWidth: isDetailOpen ? 440 : '100%',
-              borderRight: isDetailOpen ? '1px solid var(--border)' : 'none',
-            }}
-          >
+          <div className={`task-list-col ${isDetailOpen ? 'collapsed' : ''}`}>
             {activeNav === 'Moje zadania' && (
               <TaskList
                 tasks={pendingTasks}
@@ -194,26 +214,21 @@ useEffect(() => {
             )}
 
             {['Pulpit', 'Pliki', 'Ustawienia'].includes(activeNav) && (
-              <div style={{ padding: '40px', color: '#666' }}>
+              <div className="in-progress">
                 <h2>{activeNav}</h2>
-                <p>Ten widok jest w trakcie budowy...</p>
+                <p>W trakcie budowy...</p>
               </div>
             )}
           </div>
 
           {/* Kolumna panelu szczegółów */}
           <div
-            className={`detail-panel-col ${isDetailOpen ? 'open' : ''}`}
-            style={{
-              flex: isDetailOpen ? 1 : '0 0 0px',
-              opacity: isDetailOpen ? 1 : 0,
-              pointerEvents: isDetailOpen ? 'auto' : 'none',
-            }}
-          >
+            className={`detail-panel-col ${isDetailOpen ? 'open' : ''}`}>
             {selectedTask && (
               <TaskDetailPanel 
                 detail={selectedTask as unknown as TaskDetail} 
-                onClose={handleClose} 
+                onClose={handleClose}
+                onAddAttachment={handleAddMoreFiles}
               />
             )}
           </div>

@@ -62,9 +62,9 @@ const CompletedTaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onTog
         <h1 className="task-list__title">Zrealizowane zadania</h1>
       </div>
 
-      <div className="task-list__content" style={{ padding: '0 20px', overflowY: 'auto' }}>
+      <div className="task-list__content">
         {tasks.length > 0 ? (
-          <div className="task-list__items" style={{ marginTop: '24px' }}>
+          <div className="task-list__items">
             {tasks.map((task) => (
               <TaskItem
                 key={task.id}
@@ -76,7 +76,7 @@ const CompletedTaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onTog
             ))}
           </div>
         ) : (
-          <p style={{ fontSize: '13px', color: '#999', margin: '24px 0' }}>Brak zrealizowanych zadań.</p>
+          <p className="empty">Brak zrealizowanych zadań.</p>
         )}
       </div>
     </div>

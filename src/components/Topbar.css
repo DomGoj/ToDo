@@ -42,8 +42,19 @@
 .topbar__user {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   cursor: pointer;
+}
+
+.topbar__user button {
+  background: #252d42;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
 }
 
 .topbar__avatar {

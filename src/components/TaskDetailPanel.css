@@ -67,6 +67,18 @@
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.attachment-row__meta {
+  font-size: 11px;
+  color: #8b95b0;
+}
+
+.attachment-row__info {
+  display: flex;
+  flex-direction: column;
 }
 
 .attachment-row__top {
@@ -116,6 +128,19 @@
 
 .attachment-row__btn-remove:hover {
   background: #dc2626;
+}
+
+.detail-panel__add-file {
+  display: inline-block;
+  margin-top: 15px;
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.detail-panel__file-input {
+  display: none;
 }
 
 /* --- File type icons --- */

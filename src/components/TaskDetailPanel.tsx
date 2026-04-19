@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TaskDetail, Attachment } from '../types'
 import './TaskDetailPanel.css'
 
 interface Props {
   detail: TaskDetail
   onClose: () => void
+  onAddAttachment: (taskId: string, files: FileList | null) => void
 }
 
 const FileIcon: React.FC<{ type: Attachment['type'] }> = ({ type }) => {
@@ -43,26 +44,54 @@ const FileIcon: React.FC<{ type: Attachment['type'] }> = ({ type }) => {
   )
 }
 
-const AttachmentRow: React.FC<{ attachment: Attachment; isLast: boolean }> = ({ attachment, isLast }) => {
+const AttachmentRow: React.FC<{ 
+  attachment: Attachment; 
+  isActive: boolean; 
+  onClick: () => void 
+}> = ({ attachment, isActive, onClick }) => {
   return (
-    <div className="attachment-row">
+    <div className={`attachment-row ${isActive ? 'attachment-row--active' : ''}`} onClick={onClick}>
       <div className="attachment-row__top">
         <FileIcon type={attachment.type} />
-        <span className="attachment-row__name">{attachment.name}</span>
+        <div className="attachment-row__info">
+           <span className="attachment-row__name">{attachment.name}</span>
+           {attachment.uploadedBy && (
+             <span className="attachment-row__meta">Dodane przez: {attachment.uploadedBy}</span>
+           )}
+        </div>
       </div>
 
-      {/* Download / remove buttons only on the last attachment (matching the design) */}
-      {isLast && (
+      {isActive && (
         <div className="attachment-row__actions">
-          <button className="attachment-row__btn-download">Pobierz</button>
-          <button className="attachment-row__btn-remove">Usuń</button>
+          <button 
+            className="attachment-row__btn-download"
+            onClick={(e) => { e.stopPropagation(); window.open(attachment.url, '_blank'); }}
+          >
+            Pobierz
+          </button>
+          <button 
+            className="attachment-row__btn-remove"
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              alert('Funkcja usuwania wkrótce...'); 
+            }}
+          >
+            Usuń
+          </button>
         </div>
       )}
     </div>
   )
 }
 
-const TaskDetailPanel: React.FC<Props> = ({ detail, onClose }) => {
+const TaskDetailPanel: React.FC<Props> = ({ detail, onClose, onAddAttachment }) => {
+
+  const [activeAttachmentId, setActiveAttachmentId] = useState<string | null>(null);
+
+  const handleAttachmentClick = (id: string) => {
+    setActiveAttachmentId(prevId => prevId === id ? null : id);
+  };
+  
   return (
     <div className="detail-panel">
 
@@ -89,13 +118,24 @@ const TaskDetailPanel: React.FC<Props> = ({ detail, onClose }) => {
       <div className="detail-panel__section detail-panel__section--last">
         <p className="detail-panel__label">Załączniki</p>
         <div className="detail-panel__attachments">
-          {detail.attachments.map((attachment, index) => (
+          {detail.attachments && detail.attachments.map((attachment) => (
             <AttachmentRow
               key={attachment.id}
               attachment={attachment}
-              isLast={index === detail.attachments.length - 1}
+              isActive={activeAttachmentId === attachment.id}
+              onClick={() => handleAttachmentClick(attachment.id)}
             />
           ))}
+          <label className="detail-panel__add-file">
+            + Dodaj plik
+            <input 
+              type="file" 
+              multiple 
+              className="detail-panel__file-input"
+              onChange={(e) => onAddAttachment(detail.id, e.target.files)} 
+            />
+          </label>
+
         </div>
       </div>
 

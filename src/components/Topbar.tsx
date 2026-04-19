@@ -1,7 +1,21 @@
 import React from 'react'
+import { User } from 'firebase/auth'
 import './Topbar.css'
 
-const Topbar: React.FC = () => {
+interface Props {
+  user: User | null;
+  onLogout: () => void;
+}
+
+const Topbar: React.FC<Props> = ({ user, onLogout }) => {
+  
+  const getInitials = (name?: string | null) => {
+    if (!name) return 'U';
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Użytkownik';
+
   return (
     <header className="topbar">
 
@@ -21,13 +35,14 @@ const Topbar: React.FC = () => {
         <span className="topbar__notification-dot" />
       </div>
 
-      {/* User avatar + name + dropdown arrow */}
+      {/* User section + Logout Button */}
       <div className="topbar__user">
-        <div className="topbar__avatar">JK</div>
-        <span className="topbar__username">jan.kowalski</span>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M3 5l4 4 4-4" stroke="var(--text-muted)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <div className="topbar__avatar">{getInitials(user?.displayName || user?.email)}</div>
+        <span className="topbar__username">{displayName}</span>
+        
+        <button onClick={onLogout}>
+          Wyloguj
+        </button>
       </div>
 
     </header>
