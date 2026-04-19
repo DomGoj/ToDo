@@ -9,15 +9,24 @@ import { Task, TaskDetail, NavItem } from './types'
 import './App.css'
 
 // Importy Firebase
-import { db, storage } from './firebase'
+import { db, storage, auth } from './firebase'
 import { collection, onSnapshot, query, doc, updateDoc, addDoc, Timestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth'
 
 const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [tasks, setTasks] = useState<Task[]>([])
   const [selectedId, setSelectedId] = useState<string>('')
   const [activeNav, setActiveNav] = useState<NavItem>('Moje zadania')
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // 1. Pobieranie danych z Firestore
   useEffect(() => {
@@ -37,6 +46,19 @@ const App: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Błąd logowania:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    signOut(auth);
+  };
+
   // 2. Obsługa dodawania nowego zadania
   const handleAddTask = async (formData: any, files: FileList | null) => {
     try {
@@ -53,7 +75,9 @@ const App: React.FC = () => {
             id: Date.now().toString() + i,
             name: file.name,
             type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
-            url: url
+            url: url,
+            uploadedBy: user?.email, 
+            uploadedAt: Timestamp.now()
           });
         }
       }
@@ -76,7 +100,9 @@ const App: React.FC = () => {
         completed: false,
         attachments: uploadedAttachments,
         hasAttachment: uploadedAttachments.length > 0,
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
+        createdByUserEmail: user?.email,
+        createdByUserId: user?.uid
       });
       
     } catch (error) {
@@ -109,8 +135,29 @@ const App: React.FC = () => {
   const pendingTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
 
+  if (!user) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f1117', color: 'white' }}>
+        <h1 style={{ marginBottom: '20px' }}>TaskFlow</h1>
+        <p style={{ marginBottom: '30px', color: '#8b95b0' }}>Musisz się zalogować, aby uzyskać dostęp do zadań.</p>
+        <button 
+          onClick={handleLogin}
+          style={{ background: '#3b82f6', color: 'white', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' }}
+        >
+          Zaloguj się przez Google
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
+      <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 1000 }}>
+        <button onClick={handleLogout} style={{ background: '#252d42', color: 'white', padding: '8px 16px', borderRadius: '6px' }}>
+          Wyloguj ({user.displayName})
+        </button>
+      </div>
+
       <Sidebar activeItem={activeNav} onNavigate={setActiveNav} />
 
       <div className="app__main">
