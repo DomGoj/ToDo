@@ -6,6 +6,7 @@ interface Props {
   detail: TaskDetail
   onClose: () => void
   onAddAttachment: (taskId: string, files: FileList | null) => void
+  onDeleteAttachment: (taskId: string, attachment: any) => void
 }
 
 const FileIcon: React.FC<{ type: Attachment['type'] }> = ({ type }) => {
@@ -47,8 +48,9 @@ const FileIcon: React.FC<{ type: Attachment['type'] }> = ({ type }) => {
 const AttachmentRow: React.FC<{ 
   attachment: Attachment; 
   isActive: boolean; 
-  onClick: () => void 
-}> = ({ attachment, isActive, onClick }) => {
+    onClick: () => void;
+      onDelete: (attachment: Attachment) => void;
+}> = ({ attachment, isActive, onClick, onDelete }) => {
   return (
     <div className={`attachment-row ${isActive ? 'attachment-row--active' : ''}`} onClick={onClick}>
       <div className="attachment-row__top">
@@ -69,22 +71,22 @@ const AttachmentRow: React.FC<{
           >
             Pobierz
           </button>
-          <button 
-            className="attachment-row__btn-remove"
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              alert('Funkcja usuwania wkrótce...'); 
-            }}
-          >
-            Usuń
-          </button>
+                  <button
+                      className="attachment-row__btn-remove"
+                      onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(attachment);
+                      }}
+                  >
+                      Usuń
+                  </button>
         </div>
       )}
     </div>
   )
 }
 
-const TaskDetailPanel: React.FC<Props> = ({ detail, onClose, onAddAttachment }) => {
+const TaskDetailPanel: React.FC<Props> = ({ detail, onClose, onAddAttachment, onDeleteAttachment }) => {
 
   const [activeAttachmentId, setActiveAttachmentId] = useState<string | null>(null);
 
@@ -124,6 +126,7 @@ const TaskDetailPanel: React.FC<Props> = ({ detail, onClose, onAddAttachment }) 
               attachment={attachment}
               isActive={activeAttachmentId === attachment.id}
               onClick={() => handleAttachmentClick(attachment.id)}
+              onDelete={(att) => onDeleteAttachment(detail.id, att)}
             />
           ))}
           <label className="detail-panel__add-file">

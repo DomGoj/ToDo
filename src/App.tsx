@@ -12,6 +12,7 @@ import './App.css'
 import { db, storage, auth } from './firebase'
 import { collection, onSnapshot, query, doc, updateDoc, addDoc, Timestamp, arrayUnion } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { deleteObject, ref as storageRef } from 'firebase/storage';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth'
 
 const App: React.FC = () => {
@@ -71,14 +72,15 @@ useEffect(() => {
           await uploadBytes(fileRef, file);
           const url = await getDownloadURL(fileRef);
           
-          uploadedAttachments.push({
-            id: Date.now().toString() + i,
-            name: file.name,
-            type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
-            url: url,
-            uploadedBy: user?.email, 
-            uploadedAt: Timestamp.now()
-          });
+            uploadedAttachments.push({
+                id: Date.now().toString() + i,
+                name: file.name,
+                type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
+                url: url,
+                path: fileRef.fullPath,
+                uploadedBy: user?.email,
+                uploadedAt: Timestamp.now()
+            });
         }
       }
       
@@ -109,7 +111,7 @@ useEffect(() => {
       console.error("Błąd podczas dodawania zadania:", error);
       alert("Wystąpił błąd podczas zapisywania zadania w chmurze.");
     }
-  };
+    };
 
   // 3. Aktualizacja statusu ukończenia
   const handleToggle = async (id: string) => {
@@ -141,14 +143,15 @@ useEffect(() => {
         const taskRef = doc(db, "tasks", taskId);
 
         await updateDoc(taskRef, {
-          attachments: arrayUnion({
-            id: Date.now().toString() + i,
-            name: file.name,
-            type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
-            url: url,
-            uploadedBy: user?.email, 
-            uploadedAt: Timestamp.now()
-          }),
+            attachments: arrayUnion({
+                id: Date.now().toString() + i,
+                name: file.name,
+                type: file.name.split('.').pop()?.toLowerCase() || 'unknown',
+                url: url,
+                path: fileRef.fullPath,
+                uploadedBy: user?.email,
+                uploadedAt: Timestamp.now()
+            }),
           hasAttachment: true
         });
       }
@@ -156,7 +159,41 @@ useEffect(() => {
       console.error("Błąd podczas dodawania załącznika:", error);
       alert("Nie udało się dodać pliku.");
     }
-  };
+    };
+
+    // 5. Usuwanie załącznika
+    const handleDeleteAttachment = async (taskId: string, attachment: any) => {
+      try {
+        if (!attachment.path) {
+          console.error("Brak ścieżki pliku – nie można usunąć ze Storage");
+          return;
+        }
+
+        // 1. Usuń plik ze Storage
+        const fileRef = storageRef(storage, attachment.path);
+        await deleteObject(fileRef);
+
+        // 2. Usuń z Firestore
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        const updatedAttachments = (task.attachments || []).filter(
+          (att: any) => att.id !== attachment.id
+        );
+
+        const taskRef = doc(db, "tasks", taskId);
+
+        await updateDoc(taskRef, {
+          attachments: updatedAttachments,
+          hasAttachment: updatedAttachments.length > 0
+        });
+
+      } catch (error) {
+        console.error("Błąd podczas usuwania załącznika:", error);
+        alert("Nie udało się usunąć załącznika.");
+      }
+    };
+
 
   const handleSelect = (id: string) => setSelectedId(id);
   const handleClose = () => setSelectedId('');
@@ -229,6 +266,7 @@ useEffect(() => {
                 detail={selectedTask as unknown as TaskDetail} 
                 onClose={handleClose}
                 onAddAttachment={handleAddMoreFiles}
+                onDeleteAttachment={handleDeleteAttachment}
               />
             )}
           </div>
