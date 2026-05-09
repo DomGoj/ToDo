@@ -98,7 +98,7 @@ useEffect(() => {
         dueDate: formData.dueDate || null,
         dueTime: formData.dueTime || null,
         dueDateTimestamp: dueDateTimestamp,
-        priority: formData.priority !== 'Normalny' ? formData.priority : null,
+        priority: formData.priority || 'Normalny',
         completed: false,
         attachments: uploadedAttachments,
         hasAttachment: uploadedAttachments.length > 0,

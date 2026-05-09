@@ -43,7 +43,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggl
 
         <div className="task-item__badges">
           {task.priority && (
-            <span className="task-item__badge-blue">{task.priority}</span>
+            <span className={`task-item__badge task-item__badge--${task.priority.toLowerCase()}`}>
+              {task.priority}
+            </span>
           )}
         </div>
       </div>
