@@ -6,7 +6,6 @@ interface Props {
   tasks: Task[]
   selectedId: string
   onSelect: (id: string) => void
-  onToggle: (id: string) => void
   onAddTask: () => void
 }
 
@@ -14,10 +13,9 @@ interface TaskItemProps {
   task: Task
   isSelected: boolean
   onSelect: () => void
-  onToggle: () => void
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggle }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect}) => {
 
   const isOverdue = task.dueDate && task.dueDate < formatDateStr(new Date()) && !task.completed;
   
@@ -27,21 +25,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggl
       className={`task-item ${isSelected ? 'task-item--selected' : ''}`}
     >
       <div className="task-item__top">
-
-        {/* Checkbox */}
-        <div
-          onClick={(e) => {
-            e.stopPropagation() // don't open detail panel when toggling
-            onToggle()
-          }}
-          className={`task-item__checkbox ${task.completed ? 'task-item__checkbox--checked' : ''}`}
-        >
-          {task.completed && (
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5 5-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </div>
 
         {/* Title */}
         <span className={`task-item__title ${task.completed ? 'task-item__title--done' : ''}`}>
@@ -89,7 +72,7 @@ const formatDateStr = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAddTask }) => {
+const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onAddTask }) => {
 
   const today = new Date();
   const tomorrow = new Date();
@@ -115,7 +98,7 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
     <div className="task-list">
 
       <div className="task-list__header">
-        <h1 className="task-list__title">Dzisiejsze zadania</h1>
+        <h1 className="task-list__title">Moje zadania</h1>
 
         <button className="task-list__add-btn" title="Dodaj zadanie" onClick={onAddTask}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -139,7 +122,6 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
                   task={task}
                   isSelected={task.id === selectedId}
                   onSelect={() => onSelect(task.id)}
-                  onToggle={() => onToggle(task.id)}
                 />
               ))}
             </div>
@@ -158,7 +140,6 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
                 task={task}
                 isSelected={task.id === selectedId}
                 onSelect={() => onSelect(task.id)}
-                onToggle={() => onToggle(task.id)}
               />
             ))
           ) : (
@@ -178,7 +159,6 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
                 task={task}
                 isSelected={task.id === selectedId}
                 onSelect={() => onSelect(task.id)}
-                onToggle={() => onToggle(task.id)}
               />
             ))
           ) : (
@@ -198,7 +178,6 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle, onAd
                 task={task}
                 isSelected={task.id === selectedId}
                 onSelect={() => onSelect(task.id)}
-                onToggle={() => onToggle(task.id)}
               />
             ))
           ) : (

@@ -6,37 +6,21 @@ interface Props {
   tasks: Task[]
   selectedId: string
   onSelect: (id: string) => void
-  onToggle: (id: string) => void
 }
 
 interface TaskItemProps {
   task: Task
   isSelected: boolean
   onSelect: () => void
-  onToggle: () => void
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggle }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect }) => {
   return (
     <div
       onClick={onSelect}
       className={`task-item ${isSelected ? 'task-item--selected' : ''}`}
     >
       <div className="task-item__top">
-        <div
-          onClick={(e) => {
-            e.stopPropagation() 
-            onToggle()
-          }}
-          className={`task-item__checkbox ${task.completed ? 'task-item__checkbox--checked' : ''}`}
-        >
-          {task.completed && (
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5 5-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </div>
-
         <span className={`task-item__title ${task.completed ? 'task-item__title--done' : ''}`}>
           {task.title}
         </span>
@@ -57,7 +41,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect, onToggl
   )
 }
 
-const CompletedTaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onToggle }) => {
+const CompletedTaskList: React.FC<Props> = ({ tasks, selectedId, onSelect }) => {
   return (
     <div className="task-list">
       <div className="task-list__header">
@@ -73,7 +57,6 @@ const CompletedTaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onTog
                 task={task}
                 isSelected={task.id === selectedId}
                 onSelect={() => onSelect(task.id)}
-                onToggle={() => onToggle(task.id)}
               />
             ))}
           </div>

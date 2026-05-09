@@ -38,7 +38,8 @@ useEffect(() => {
         return {
           id: doc.id,
           ...data,
-          attachments: data.attachments || [] 
+          attachments: data.attachments || [],
+          comments: data.comments || []
         } as any; 
       }) as Task[];
       setTasks(tasksData);
@@ -113,21 +114,6 @@ useEffect(() => {
     }
     };
 
-  // 3. Aktualizacja statusu ukończenia
-  const handleToggle = async (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-
-    const taskRef = doc(db, "tasks", id);
-    try {
-      await updateDoc(taskRef, {
-        completed: !task.completed
-      });
-    } catch (error) {
-      console.error("Błąd aktualizacji statusu:", error);
-    }
-  }
-
   // 4. Dodawanie plików do istniejącego zadania
   const handleAddMoreFiles = async (taskId: string, files: FileList | null) => {
     if (!files || files.length === 0 || !user) return;
@@ -194,6 +180,56 @@ useEffect(() => {
       }
     };
 
+    // 6. Dodawanie komentarza do zadania
+    const handleAddComment = async (taskId: string, text: string) => {
+      if (!user) return;
+
+      try {
+        const newComment = {
+          id: Date.now().toString(),
+          text: text,
+          author: user.displayName || user.email?.split('@')[0] || "Użytkownik",
+          createdAt: new Date().toLocaleString('pl-PL', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+          })
+        };
+
+        const taskRef = doc(db, "tasks", taskId);
+        
+        await updateDoc(taskRef, {
+          comments: arrayUnion(newComment)
+        });
+      } catch (error) {
+        console.error("Błąd podczas dodawania komentarza:", error);
+        alert("Nie udało się dodać komentarza.");
+      }
+    };
+
+    // 7. Zmiana statusu zadania (Zrealizuj / Wznów) z komentarzem
+    const handleStatusChange = async (taskId: string, isCompleted: boolean, commentText: string) => {
+      if (!user) return;
+      const taskRef = doc(db, "tasks", taskId);
+      
+      try {
+        const newComment = {
+          id: Date.now().toString(),
+          text: commentText,
+          author: user.displayName || user.email?.split('@')[0] || "Użytkownik",
+          createdAt: new Date().toLocaleString('pl-PL', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+          }),
+          type: isCompleted ? 'completion' : 'resumption'
+        };
+
+        await updateDoc(taskRef, {
+          completed: isCompleted,
+          comments: arrayUnion(newComment)
+        });
+      } catch (error) {
+        console.error("Błąd podczas zmiany statusu:", error);
+      }
+    };
 
   const handleSelect = (id: string) => setSelectedId(id);
   const handleClose = () => setSelectedId('');
@@ -236,7 +272,6 @@ useEffect(() => {
                 tasks={pendingTasks}
                 selectedId={selectedId}
                 onSelect={handleSelect}
-                onToggle={handleToggle}
                 onAddTask={() => setIsModalOpen(true)}
               />
             )}
@@ -246,7 +281,6 @@ useEffect(() => {
                 tasks={completedTasks}
                 selectedId={selectedId}
                 onSelect={handleSelect}
-                onToggle={handleToggle}
               />
             )}
 
@@ -267,6 +301,8 @@ useEffect(() => {
                 onClose={handleClose}
                 onAddAttachment={handleAddMoreFiles}
                 onDeleteAttachment={handleDeleteAttachment}
+                onAddComment={handleAddComment}
+                onChangeStatus={handleStatusChange}
               />
             )}
           </div>

@@ -26,6 +26,16 @@ export interface TaskDetail {
   title: string;
   description: string;
   attachments: Attachment[];
+  comments?: Comment[];
+  completed: boolean;
+}
+
+export interface Comment {
+  id: string;
+  text: string;
+  author: string;
+  createdAt: string;
+  type?: 'normal' | 'completion' | 'resumption';
 }
 
 export type NavItem = 'Pulpit' | 'Moje zadania' | 'Zrealizowane zadania' | 'Pliki' | 'Ustawienia'

@@ -110,6 +110,7 @@
   font-size: 13.5px;
   color: var(--text-primary);
   flex: 1;
+  margin-left: 27px;
 }
 
 .task-item__title--done {
