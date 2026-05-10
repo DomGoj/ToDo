@@ -182,7 +182,11 @@ const TaskDetailPanel: React.FC<Props> = ({ detail, onClose, onAddAttachment, on
             detail.comments.map((comment) => (
               <div 
                 key={comment.id} 
-                className={`comment-item ${comment.type === 'completion' ? 'comment-item--completion' : ''} ${comment.type === 'resumption' ? 'comment-item--resumption' : ''}`}
+                className={`comment-item 
+                  ${comment.type === 'completion' ? 'comment-item--completion' : ''} 
+                  ${comment.type === 'resumption' ? 'comment-item--resumption' : ''}
+                  ${comment.type === 'attachment' ? 'comment-item--attachment' : ''} 
+                `}
               >
                 <div className="comment-item__header">
                   <span className="comment-item__author">{comment.author}</span>

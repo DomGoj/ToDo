@@ -35,7 +35,7 @@ export interface Comment {
   text: string;
   author: string;
   createdAt: string;
-  type?: 'normal' | 'completion' | 'resumption';
+  type?: 'normal' | 'completion' | 'resumption' | 'attachment';
 }
 
 export type NavItem = 'Pulpit' | 'Moje zadania' | 'Zrealizowane zadania' | 'Pliki' | 'Ustawienia'

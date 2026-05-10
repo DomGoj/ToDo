@@ -128,6 +128,17 @@ useEffect(() => {
 
         const taskRef = doc(db, "tasks", taskId);
 
+        const attachmentComment = {
+          id: `att_${Date.now()}_${i}`,
+          text: "Dodano załącznik",
+          author: user.displayName || user.email?.split('@')[0] || "Użytkownik",
+          createdAt: new Date().toLocaleString('pl-PL', { 
+            day: '2-digit', month: '2-digit', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+          }),
+          type: 'attachment'
+        };
+
         await updateDoc(taskRef, {
             attachments: arrayUnion({
                 id: Date.now().toString() + i,
@@ -138,6 +149,7 @@ useEffect(() => {
                 uploadedBy: user?.email,
                 uploadedAt: Timestamp.now()
             }),
+          comments: arrayUnion(attachmentComment),
           hasAttachment: true
         });
       }
