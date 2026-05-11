@@ -13,6 +13,13 @@
   min-width: 0;
 }
 
+.server-status {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
 .app__content {
   flex: 1;
   display: flex;
@@ -23,9 +30,10 @@
 /* Animated columns */
 
 .task-list-col {
-  transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   flex: 0 0 100%;
   min-width: 100%;
@@ -41,8 +49,9 @@
 }
 
 .detail-panel-col {
-  transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.3s ease;
+  transition:
+    flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
   overflow: hidden;
   min-width: 0;
   flex: 0 0 0px;
@@ -88,12 +97,12 @@
 }
 
 .login-panel h1 {
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .login-panel p {
   margin-bottom: 30px;
-  color: #8b95b0
+  color: #8b95b0;
 }
 
 .login-panel button {

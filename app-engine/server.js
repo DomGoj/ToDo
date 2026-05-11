@@ -1,14 +1,16 @@
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("App Engine works!");
-});
+app.use(cors());
+app.use(express.json());
 
 app.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
+  res.status(200).json({
+    status: "online",
+    service: "ToDo App Engine",
+    timestamp: new Date().toISOString(),
   });
 });
 
