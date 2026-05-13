@@ -7,6 +7,7 @@
   flex-direction: column;
   padding: 20px 12px;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .sidebar__logo {
@@ -15,6 +16,10 @@
   font-size: 17px;
   color: var(--text-primary);
   letter-spacing: 1px;
+}
+
+.sidebar__logo span {
+  color: var(--accent-blue);
 }
 
 .sidebar__nav-btn {
@@ -52,4 +57,40 @@
 
 .sidebar__nav-btn--active .sidebar__nav-icon {
   opacity: 1;
+}
+
+/* Mobile: sidebar jako drawer */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar--open {
+    transform: translateX(0);
+  }
+
+  .sidebar__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 40;
+  }
+
+  .sidebar__overlay--visible {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    position: relative;
+    transform: none !important;
+  }
 }

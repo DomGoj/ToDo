@@ -15,23 +15,27 @@ interface TaskItemProps {
   onSelect: () => void
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect}) => {
+const formatDateStr = (date: Date) => {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
 
-  const isOverdue = task.dueDate && task.dueDate < formatDateStr(new Date()) && !task.completed;
-  
+const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect }) => {
+  const todayStr = formatDateStr(new Date())
+  const isOverdue = task.dueDate && task.dueDate < todayStr && !task.completed
+
   return (
     <div
       onClick={onSelect}
       className={`task-item ${isSelected ? 'task-item--selected' : ''}`}
     >
       <div className="task-item__top">
-
-        {/* Title */}
         <span className={`task-item__title ${task.completed ? 'task-item__title--done' : ''}`}>
           {task.title}
         </span>
 
-        {/* Right-side badges */}
         <div className="task-item__badges">
           {task.badge && (
             <span className="task-item__badge-green">{task.badge}</span>
@@ -57,49 +61,34 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, onSelect}) => {
         </div>
       </div>
 
-      {/* Due time */}
-      <div className={`task-item__due ${isOverdue ? 'task-item__due--overdue' : ''}`} style={isOverdue ? { color: '#d32f2f', fontWeight: '500' } : {}}>
-        Termin: {task.dueDate ? `${task.dueDate} ` : ''}{task.dueTime || ''}
+      <div className={`task-item__due ${isOverdue ? 'task-item__due--overdue' : ''}`}>
+        {task.dueDate ? `Termin: ${task.dueDate}${task.dueTime ? ' ' + task.dueTime : ''}` : 'Bez terminu'}
       </div>
     </div>
   )
 }
 
-const formatDateStr = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
 const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onAddTask }) => {
+  const today = new Date()
+  const tomorrow = new Date()
+  tomorrow.setDate(today.getDate() + 1)
 
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const todayStr = formatDateStr(today)
+  const tomorrowStr = formatDateStr(tomorrow)
 
-  const todayStr = formatDateStr(today);
-  const tomorrowStr = formatDateStr(tomorrow);
-
-  // Filtrowanie zadań
-  const overdueTasks = tasks.filter(t => t.dueDate && t.dueDate < todayStr && !t.completed);
-  const todayTasks = tasks.filter(t => t.dueDate === todayStr);
-  const tomorrowTasks = tasks.filter(t => t.dueDate === tomorrowStr);
-  
-  // Pozostałe zadania (bez daty, daty późniejsze niż jutro, oraz zrealizowane zadania)
+  const overdueTasks = tasks.filter(t => t.dueDate && t.dueDate < todayStr && !t.completed)
+  const todayTasks = tasks.filter(t => t.dueDate === todayStr)
+  const tomorrowTasks = tasks.filter(t => t.dueDate === tomorrowStr)
   const laterTasks = tasks.filter(t => {
-    if (t.dueDate === todayStr) return false;
-    if (t.dueDate === tomorrowStr) return false;
-    if (t.dueDate && t.dueDate < todayStr && !t.completed) return false;
-    return true;
-  });
+    if (t.dueDate === todayStr || t.dueDate === tomorrowStr) return false
+    if (t.dueDate && t.dueDate < todayStr && !t.completed) return false
+    return true
+  })
 
   return (
     <div className="task-list">
-
       <div className="task-list__header">
         <h1 className="task-list__title">Moje zadania</h1>
-
         <button className="task-list__add-btn" title="Dodaj zadanie" onClick={onAddTask}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M8 3v10M3 8h10" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
@@ -107,84 +96,54 @@ const TaskList: React.FC<Props> = ({ tasks, selectedId, onSelect, onAddTask }) =
         </button>
       </div>
 
-       <div className="task-list__content" style={{ padding: '0 20px', overflowY: 'auto' }}>
-        
-        {/* Zadania zaległe */}
+      <div className="task-list__content">
         {overdueTasks.length > 0 && (
           <>
-            <h2 style={{ fontSize: '14px', color: '#d32f2f', marginTop: '16px', marginBottom: '8px', fontWeight: 'bold' }}>
+            <h2 className="task-list__section-label task-list__section-label--overdue">
               Zaległe zadania ({overdueTasks.length})
             </h2>
             <div className="task-list__items">
-              {overdueTasks.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  isSelected={task.id === selectedId}
-                  onSelect={() => onSelect(task.id)}
-                />
+              {overdueTasks.map(task => (
+                <TaskItem key={task.id} task={task} isSelected={task.id === selectedId} onSelect={() => onSelect(task.id)} />
               ))}
             </div>
           </>
         )}
 
-        {/* Dzisiejsze zadania */}
-        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: overdueTasks.length > 0 ? '24px' : '16px', marginBottom: '8px' }}>
+        <h2 className="task-list__section-label" style={{ marginTop: overdueTasks.length > 0 ? undefined : 16 }}>
           Dzisiejsze zadania ({todayTasks.length})
         </h2>
         <div className="task-list__items">
           {todayTasks.length > 0 ? (
-            todayTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                isSelected={task.id === selectedId}
-                onSelect={() => onSelect(task.id)}
-              />
+            todayTasks.map(task => (
+              <TaskItem key={task.id} task={task} isSelected={task.id === selectedId} onSelect={() => onSelect(task.id)} />
             ))
           ) : (
-            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak zadań na dziś.</p>
+            <p className="task-list__empty">Brak zadań na dziś.</p>
           )}
         </div>
 
-        {/* Jutrzejsze zadania */}
-        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: '24px', marginBottom: '8px' }}>
-          Jutrzejsze zadania ({tomorrowTasks.length})
-        </h2>
+        <h2 className="task-list__section-label">Jutrzejsze zadania ({tomorrowTasks.length})</h2>
         <div className="task-list__items">
           {tomorrowTasks.length > 0 ? (
-            tomorrowTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                isSelected={task.id === selectedId}
-                onSelect={() => onSelect(task.id)}
-              />
+            tomorrowTasks.map(task => (
+              <TaskItem key={task.id} task={task} isSelected={task.id === selectedId} onSelect={() => onSelect(task.id)} />
             ))
           ) : (
-            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak zadań na jutro.</p>
+            <p className="task-list__empty">Brak zadań na jutro.</p>
           )}
         </div>
 
-        {/* Późniejsze zadania */}
-        <h2 style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginTop: '24px', marginBottom: '8px' }}>
-          Późniejsze zadania ({laterTasks.length})
-        </h2>
+        <h2 className="task-list__section-label">Późniejsze zadania ({laterTasks.length})</h2>
         <div className="task-list__items">
           {laterTasks.length > 0 ? (
-            laterTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                isSelected={task.id === selectedId}
-                onSelect={() => onSelect(task.id)}
-              />
+            laterTasks.map(task => (
+              <TaskItem key={task.id} task={task} isSelected={task.id === selectedId} onSelect={() => onSelect(task.id)} />
             ))
           ) : (
-            <p style={{ fontSize: '13px', color: '#999', margin: '8px 0' }}>Brak późniejszych zadań.</p>
+            <p className="task-list__empty">Brak późniejszych zadań.</p>
           )}
         </div>
-
       </div>
     </div>
   )

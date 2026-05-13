@@ -5,6 +5,8 @@ import './Sidebar.css'
 interface Props {
   activeItem: NavItem
   onNavigate: (item: NavItem) => void
+  mobileOpen: boolean
+  onMobileClose: () => void
 }
 
 const navIcons: Record<NavItem, React.ReactNode> = {
@@ -43,25 +45,35 @@ const navIcons: Record<NavItem, React.ReactNode> = {
 
 const navItems: NavItem[] = ['Pulpit', 'Moje zadania', 'Zrealizowane zadania', 'Pliki', 'Ustawienia']
 
-const Sidebar: React.FC<Props> = ({ activeItem, onNavigate }) => {
+const Sidebar: React.FC<Props> = ({ activeItem, onNavigate, mobileOpen, onMobileClose }) => {
   return (
-    <aside className="sidebar">
-      <div className="sidebar__logo">LOGO</div>
+    <>
+      {/* Overlay for mobile */}
+      <div
+        className={`sidebar__overlay ${mobileOpen ? 'sidebar__overlay--visible' : ''}`}
+        onClick={onMobileClose}
+      />
 
-      {navItems.map((item) => {
-        const isActive = item === activeItem
-        return (
-          <button
-            key={item}
-            onClick={() => onNavigate(item)}
-            className={`sidebar__nav-btn ${isActive ? 'sidebar__nav-btn--active' : ''}`}
-          >
-            <span className="sidebar__nav-icon">{navIcons[item]}</span>
-            {item}
-          </button>
-        )
-      })}
-    </aside>
+      <aside className={`sidebar ${mobileOpen ? 'sidebar--open' : ''}`}>
+        <div className="sidebar__logo">
+          <span>Task</span>Flow
+        </div>
+
+        {navItems.map((item) => {
+          const isActive = item === activeItem
+          return (
+            <button
+              key={item}
+              onClick={() => { onNavigate(item); onMobileClose(); }}
+              className={`sidebar__nav-btn ${isActive ? 'sidebar__nav-btn--active' : ''}`}
+            >
+              <span className="sidebar__nav-icon">{navIcons[item]}</span>
+              {item}
+            </button>
+          )
+        })}
+      </aside>
+    </>
   )
 }
 

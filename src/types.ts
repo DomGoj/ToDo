@@ -2,13 +2,13 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  dueDate?: string; 
+  dueDate?: string;
   dueTime?: string;
   completed: boolean;
   priority?: string;
   badge?: string;
   hasAttachment?: boolean;
-  attachments?: any[];
+  attachments?: Attachment[];
 }
 
 export interface Attachment {
@@ -16,6 +16,7 @@ export interface Attachment {
   name: string;
   type: 'png' | 'pdf' | 'docx';
   url: string;
+  path?: string;
   uploadedBy?: string;
   uploadedAt?: any;
 }

@@ -5,7 +5,7 @@
   padding: 0;
 }
 
-/* Global CSS variables - colors and font */
+/* Global CSS variables */
 :root {
   --bg-primary: #0f1117;
   --bg-secondary: #161b27;
@@ -39,3 +39,17 @@ button {
   outline: none;
   background: none;
 }
+
+input, textarea, select {
+  font-family: var(--font);
+  color: var(--text-primary);
+}
+
+input[type=date]::-webkit-calendar-picker-indicator,
+input[type=time]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.5);
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #252d42; border-radius: 2px; }
