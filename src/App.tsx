@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [activeNav, setActiveNav] = useState<NavItem>('Pulpit')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   // Auth
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -246,7 +246,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="app">
+    <div className={`app ${theme}`}>
       <Sidebar
         activeItem={activeNav}
         onNavigate={handleNavigate}
@@ -290,12 +290,48 @@ const App: React.FC = () => {
               />
             )}
 
-            {['Pliki', 'Ustawienia'].includes(activeNav) && (
-              <div className="in-progress">
-                <h2>{activeNav}</h2>
-                <p>W trakcie budowy...</p>
-              </div>
-            )}
+           {activeNav === 'Pliki' && (
+  <div className="in-progress">
+    <h2>Pliki</h2>
+    <p>W trakcie budowy...</p>
+  </div>
+)}
+
+{activeNav === 'Ustawienia' && (
+  <div className="settings-page">
+
+    <h2>Ustawienia</h2>
+    <p>Dostosuj wygląd aplikacji do swoich preferencji.</p>
+
+    <div className="settings-card">
+
+      <div>
+        <h3>Wygląd aplikacji</h3>
+        <p>Wybierz motyw, który Ci odpowiada.</p>
+      </div>
+
+      <div className="theme-switch">
+
+        <button
+          className={theme === 'dark' ? 'active-theme' : ''}
+          onClick={() => setTheme('dark')}
+        >
+          🌙 Ciemny
+        </button>
+
+        <button
+          className={theme === 'light' ? 'active-theme' : ''}
+          onClick={() => setTheme('light')}
+        >
+          ☀️ Jasny
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
           </div>
 
           {/* Panel szczegółów */}
