@@ -6,6 +6,7 @@ import TaskDetailPanel from './components/TaskDetailPanel'
 import TaskFormModal from './components/TaskFormModal'
 import CompletedTaskList from './components/CompletedTaskList'
 import Dashboard from './components/Dashboard'
+import FilesPage from './components/FilesPage'
 import { Task, TaskDetail, NavItem } from './types'
 import './App.css'
 
@@ -289,12 +290,9 @@ const App: React.FC = () => {
                 onSelect={handleSelect}
               />
             )}
-
+// Widok wszystkich plików z zadań
            {activeNav === 'Pliki' && (
-  <div className="in-progress">
-    <h2>Pliki</h2>
-    <p>W trakcie budowy...</p>
-  </div>
+  <FilesPage tasks={tasks} />
 )}
 
 {activeNav === 'Ustawienia' && (
