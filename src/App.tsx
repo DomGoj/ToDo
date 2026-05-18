@@ -7,14 +7,15 @@ import TaskFormModal from './components/TaskFormModal'
 import CompletedTaskList from './components/CompletedTaskList'
 import Dashboard from './components/Dashboard'
 import FilesPage from './components/FilesPage'
+import SettingsPage from './components/SettingsPage'
 import { Task, TaskDetail, NavItem } from './types'
 import './App.css'
 
 // Firebase
 import { db, storage, auth } from './firebase'
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, addDoc, Timestamp, arrayUnion } from 'firebase/firestore'
+import { collection, onSnapshot, query, orderBy, doc, getDoc, updateDoc, setDoc, addDoc, Timestamp, arrayUnion } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL, deleteObject, ref as storageRef } from 'firebase/storage'
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth'
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -32,6 +33,13 @@ const App: React.FC = () => {
     })
     return () => unsubscribe()
   }, [])
+
+  // Firestore - pobierz motyw
+  useEffect(() => {
+    if (user) {
+      handleLoadTheme();
+    }
+  }, [user]);
 
   // Firestore — nasłuch na zadania
   useEffect(() => {
@@ -222,6 +230,44 @@ const App: React.FC = () => {
     }
   }
 
+  // Odczyt ustawienia 'theme'
+  const handleLoadTheme = async () => {
+    if (!user) return;
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(userDocRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.theme) setTheme(data.theme);
+      } else {
+        const defaultTheme = 'dark';
+        await setDoc(userDocRef, { 
+          theme: defaultTheme,
+          createdAt: new Date()
+        });
+        setTheme(defaultTheme);
+        console.log("Utworzono nowy dokument ustawień dla użytkownika.");
+      }
+    } catch (error) {
+      console.error("Błąd podczas odczytu/tworzenia:", error);
+    }
+  };
+
+  // Zmiana ustawienia 'theme'
+  const handleChangeTheme = async (newTheme: 'light' | 'dark') => {
+    if (!user) return;
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, {
+        theme: newTheme
+      });      
+      setTheme(newTheme);
+    } catch (error) {
+      console.error("Błąd podczas zapisu:", error);
+    }
+  };
+
   const handleSelect = (id: string) => setSelectedId(id)
   const handleClose = () => setSelectedId('')
   const handleNavigate = (navItem: NavItem) => {
@@ -290,46 +336,17 @@ const App: React.FC = () => {
                 onSelect={handleSelect}
               />
             )}
-// Widok wszystkich plików z zadań
-           {activeNav === 'Pliki' && (
-  <FilesPage tasks={tasks} />
-)}
 
-{activeNav === 'Ustawienia' && (
-  <div className="settings-page">
+            {activeNav === 'Pliki' && (
+              <FilesPage tasks={tasks} />
+            )}
 
-    <h2>Ustawienia</h2>
-    <p>Dostosuj wygląd aplikacji do swoich preferencji.</p>
-
-    <div className="settings-card">
-
-      <div>
-        <h3>Wygląd aplikacji</h3>
-        <p>Wybierz motyw, który Ci odpowiada.</p>
-      </div>
-
-      <div className="theme-switch">
-
-        <button
-          className={theme === 'dark' ? 'active-theme' : ''}
-          onClick={() => setTheme('dark')}
-        >
-          🌙 Ciemny
-        </button>
-
-        <button
-          className={theme === 'light' ? 'active-theme' : ''}
-          onClick={() => setTheme('light')}
-        >
-          ☀️ Jasny
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-)}
+            {activeNav === 'Ustawienia' && (
+              <SettingsPage
+                theme={theme}
+                setTheme={(newTheme) => handleChangeTheme(newTheme)}
+              />
+            )}
           </div>
 
           {/* Panel szczegółów */}

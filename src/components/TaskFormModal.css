@@ -13,13 +13,13 @@
 }
 
 .modal-content {
-  background: #1a2035;
-  border: 1px solid #252d42;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
   padding: 30px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 40px var(--shadow);
 }
 
 .modal-header {
@@ -30,7 +30,7 @@
 }
 
 .modal-title {
-  color: #e8ecf4;
+  color: var(--text-primary);
   font-size: 20px;
   margin: 0;
 }
@@ -50,7 +50,7 @@
 
 .modal-close-btn:hover {
   background: rgba(239, 68, 68, 0.1);
-}
+} 
 
 .form-group {
   margin-top: 12px;
@@ -69,9 +69,9 @@
 }
 
 .form-input, .form-textarea, .form-select {
-  background: #131824;
+  background: var(--bg-card);
   border: 1px solid #252d42;
-  color: white;
+  color: var(--text-primary);
   padding: 12px;
   border-radius: 8px;
   outline: none;
@@ -81,7 +81,7 @@
 }
 
 .form-input:focus, .form-textarea:focus, .form-select:focus {
-  border-color: #3b82f6;
+  border-color: var(--accent-blue-light);
 }
 
 .form-input::placeholder, .form-textarea::placeholder {
@@ -95,14 +95,13 @@
 }
 
 .form-file-input {
-  color: #8b95b0;
+  color: var(--text-primary);
   font-family: inherit;
   font-size: 13px;
 }
 
 .form-file-input::file-selector-button {
-  background: #252d42;
-  color: #e8ecf4;
+  background: var(--accent-blue-light);
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -128,15 +127,17 @@
   padding: 10px 20px;
   font-weight: 500;
   transition: color 0.2s;
+  transition: background 0.2s;
 }
 
 .btn-cancel:hover {
-  color: #e8ecf4;
+  background: var(--bg-card-hover);
+  border-radius: 8px;
 }
 
 .btn-submit {
-  background: #3b82f6;
-  color: white;
+  background: var(--accent-blue);
+  color: var(--text-opposite);
   padding: 10px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -144,12 +145,12 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--accent-blue-light);
 }
 
 .btn-submit:disabled {
-  background: #252d42;
-  color: #5a6480;
+  background: var(--accent-blue-light);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 

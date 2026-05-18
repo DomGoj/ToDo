@@ -1,16 +1,16 @@
 /* DARK MODE */
-.app.dark {
+/* .app.dark {
   --bg-primary: #0f172a;
   --bg-secondary: #111827;
   --text-primary: #f8fafc;
-}
+} */
 
 /* LIGHT MODE */
-.app.light {
+/* .app.light {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --text-primary: #1e293b;
-}
+} */
 .app {
   color: var(--text-primary);
 }
@@ -150,66 +150,4 @@
   background: #ffffff;
   color: #111827;
   border: 1px solid #dbe3ee;
-}
-
-/* SETTINGS PAGE */
-
-.settings-page {
-  padding: 32px;
-}
-
-.settings-page h2 {
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-.settings-page p {
-  opacity: 0.8;
-  margin-bottom: 24px;
-}
-
-.settings-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background: rgba(255,255,255,0.03);
-
-  border: 1px solid rgba(255,255,255,0.08);
-
-  border-radius: 20px;
-
-  padding: 32px;
-
-  margin-top: 24px;
-}
-
-.theme-switch {
-  display: flex;
-  gap: 12px;
-}
-
-.theme-switch button {
-  border: none;
-  padding: 14px 24px;
-  border-radius: 14px;
-
-  background: transparent;
-  color: inherit;
-
-  cursor: pointer;
-
-  font-size: 16px;
-  font-weight: 600;
-
-  transition: all 0.2s ease;
-}
-
-.theme-switch button:hover {
-  transform: translateY(-2px);
-}
-
-.active-theme {
-  background: #3b82f6 !important;
-  color: white !important;
 }

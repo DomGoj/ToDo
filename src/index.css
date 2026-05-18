@@ -13,14 +13,35 @@
   --bg-card-hover: #1e2640;
   --bg-selected: #1d2d50;
   --bg-sidebar: #131824;
+  --bg-muted: #0f1117;
   --border: #252d42;
   --text-primary: #e8ecf4;
   --text-secondary: #8b95b0;
   --text-muted: #5a6480;
+  --text-opposite: #ffffff;
+  --text-light: #e8ecf4;
   --accent-blue: #3b82f6;
   --accent-blue-light: #60a5fa;
   --accent-green: #10b981;
   --font: 'DM Sans', -apple-system, sans-serif;
+}
+
+.app.light {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-selected: #e2e8f0;
+  --bg-sidebar: #ffffff;
+  --bg-muted: #f1f5f9;
+  --border: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-light: #e8ecf4;
+  --accent-blue: #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-green: #059669;
 }
 
 html, body, #root {
