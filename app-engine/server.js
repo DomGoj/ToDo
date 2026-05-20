@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -12,6 +13,12 @@ app.get("/health", (req, res) => {
     service: "ToDo App Engine",
     timestamp: new Date().toISOString(),
   });
+});
+
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 const PORT = process.env.PORT || 8080;

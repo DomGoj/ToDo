@@ -50,7 +50,7 @@ const App: React.FC = () => {
         ...d.data(),
         attachments: d.data().attachments || [],
         comments: d.data().comments || []
-      })) as Task[]
+      } as unknown as Task))
       setTasks(tasksData)
     })
     return () => unsubscribe()
