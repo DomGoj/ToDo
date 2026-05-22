@@ -1,0 +1,153 @@
+/* DARK MODE */
+/* .app.dark {
+  --bg-primary: #0f172a;
+  --bg-secondary: #111827;
+  --text-primary: #f8fafc;
+} */
+
+/* LIGHT MODE */
+/* .app.light {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #1e293b;
+} */
+.app {
+  color: var(--text-primary);
+}
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-primary);
+
+  transition: all 0.3s ease;
+}
+
+.app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.app__content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: var(--bg-secondary);
+
+  transition: all 0.3s ease;
+}
+
+/* Animated columns */
+
+.task-list-col {
+  transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  flex: 0 0 100%;
+  min-width: 100%;
+  max-width: 100%;
+  border-right: none;
+}
+
+.task-list-col.collapsed {
+  flex: 0 0 400px;
+  min-width: 280px;
+  max-width: 440px;
+  border-right: 1px solid var(--border);
+}
+
+.detail-panel-col {
+  transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+  overflow: hidden;
+  min-width: 0;
+  flex: 0 0 0px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.detail-panel-col.open {
+  flex: 1;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.in-progress {
+  padding: 40px;
+  color: var(--text-muted);
+}
+
+.in-progress h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.login-panel {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0f1117;
+  color: white;
+}
+
+.login-panel h1 {
+  margin-bottom: 20px;
+  font-size: 32px;
+}
+
+.login-panel h1 span {
+  color: var(--accent-blue);
+}
+
+.login-panel p {
+  margin-bottom: 30px;
+  color: #8b95b0;
+}
+
+.login-panel button {
+  background: #3b82f6;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+}
+
+/* LIGHT MODE */
+
+.app.light {
+  background: #f4f7fb;
+  color: #111827;
+}
+
+.app.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid #dbe3ee;
+}
+
+.app.light .topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #dbe3ee;
+}
+
+.app.light .dashboard-card,
+.app.light .task-card,
+.app.light .in-progress {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #dbe3ee;
+}

@@ -1,0 +1,159 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  box-shadow: 0 20px 40px var(--shadow);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between; /* Rozsuwa tytuł i przycisk na boki */
+  align-items: center; /* Wyrównuje je w pionie */
+  margin-bottom: 25px;
+}
+
+.modal-title {
+  color: var(--text-primary);
+  font-size: 20px;
+  margin: 0;
+}
+
+.modal-close-btn {
+  color: #ef4444;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+} 
+
+.form-group {
+  margin-top: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  color: #8b95b0;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.form-input, .form-textarea, .form-select {
+  background: var(--bg-card);
+  border: 1px solid #252d42;
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--accent-blue-light);
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: #5a6480;
+  font-family: inherit;
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-file-input {
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.form-file-input::file-selector-button {
+  background: var(--accent-blue-light);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.form-file-input::file-selector-button:hover {
+  background: #3b82f6;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-cancel {
+  color: #8b95b0;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: color 0.2s;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: var(--bg-card-hover);
+  border-radius: 8px;
+}
+
+.btn-submit {
+  background: var(--accent-blue);
+  color: var(--text-opposite);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: var(--accent-blue-light);
+}
+
+.btn-submit:disabled {
+  background: var(--accent-blue-light);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.detail-panel__description {
+  white-space: pre-wrap;
+}

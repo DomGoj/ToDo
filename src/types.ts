@@ -1,0 +1,42 @@
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  dueDate?: string;
+  dueTime?: string;
+  completed: boolean;
+  priority?: string;
+  badge?: string;
+  hasAttachment?: boolean;
+  attachments?: Attachment[];
+}
+
+export interface Attachment {
+  id: string;
+  name: string;
+  type: 'png' | 'pdf' | 'docx';
+  url: string;
+  path?: string;
+  uploadedBy?: string;
+  uploadedAt?: any;
+}
+
+export interface TaskDetail {
+  id: string;
+  taskId: string;
+  title: string;
+  description: string;
+  attachments: Attachment[];
+  comments?: Comment[];
+  completed: boolean;
+}
+
+export interface Comment {
+  id: string;
+  text: string;
+  author: string;
+  createdAt: string;
+  type?: 'normal' | 'completion' | 'resumption' | 'attachment';
+}
+
+export type NavItem = 'Pulpit' | 'Moje zadania' | 'Zrealizowane zadania' | 'Pliki' | 'Ustawienia'
